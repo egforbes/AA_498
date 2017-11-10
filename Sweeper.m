@@ -110,9 +110,14 @@ for jcrop = 1:9
 %    legend off
    
    Te(jcrop) = 1/Te_fit.p1;
-   ci = confint(Te_fit,0.95);
+   ci = confint(Te_fit,0.98);
    errbar(jcrop,:) = ci(:,1);
 end
 
 Temp_err = 1./errbar;
-%commenting
+
+locs_use = [1 -3 -3 -3 -2 -2 -2 -1 0];
+plot1 = errorbar(locs_use,Te,Te-Temp_err(:,2),Te-Temp_err(:,1),'ko');
+xlim([-4 2])
+ylim([0 40])
+
