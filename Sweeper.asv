@@ -94,25 +94,10 @@ Te_ind(:,7) = x1 > -46 & x1 < -25;
 Te_ind(:,8) = x1 > 10 & x1 < 32;
 Te_ind(:,9) = x1 > -4 & x1 < 31;
 
-
-%%
 %Brute force your way into electron temperatures
 
 Te = zeros(9,1);
 
-for jcrop = 1:9
-   ii = Te_ind(:,jcrop) == 1;
-   x_u = x1(ii);
-   I_u = log(I_use(jcrop,ii));
-   Te_fit = fit(x_u.',I_u.','poly1');
-%    subplot(3,3,jcrop)
-%    plot(Te_fit,x_u.',I_u.')
-%    legend off
-   
-   Te(jcrop) = 1/Te_fit.p1;
-   ci = confint(Te_fit,0.95);
-   errbar(jcrop,:) = ci(:,1);
-end
 
-Temp_err = 1./errbar;
+
 
