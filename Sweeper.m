@@ -35,6 +35,9 @@ for name = names
     slope=((polyval(p,min(V)+30)-polyval(p,min(V)))/((min(V)+30)-min(V)));
     Ii =(slope.*(x1-min(V)))+min(I); % Ion saturation current estimate
     
+    I_slope(index) = slope;
+    I_b(index) = min(I);
+    
     % plot the IV Trace of I-Probe
     figure(1)
     plot(x1,f1,'-.','LineWidth',1);
@@ -70,6 +73,8 @@ ind_use = I_final(:,end) > 0;
 %Extract only current traces we want
 I_use = I_final(ind_use,:);
 names_use = names(ind_use);
+I_slope_u = I_slope(ind_use);
+I_b_u = I_b(ind_use);
 
 figure(55)
 plot(x1,log(I_use(9,:)),'-.','Linewidth',2)
@@ -78,7 +83,7 @@ xlabel('Voltage (V)')
 ylabel('Current (A)')
 title('Signal')
 
-legend(names(ind_use),'location','best')
+% legend(names(ind_use),'location','best')
 
 %%
 
@@ -109,10 +114,13 @@ for jcrop = 1:9
 %    subplot(3,3,jcrop)               %These lines will plot the fits
 %    plot(Te_fit,x_u.',I_u.')
 %    legend off
-   
+    
+    Isat_vp(jcrop) = I_slope_u(jcrop)*(x_u(end)-min(V)) + I_b_u(jcrop);
+
    Te(jcrop) = 1/Te_fit.p1;          %Te is the inverse slope
    ci = confint(Te_fit,0.9);         %gets the 90% confidence intervals
    errbar(jcrop,:) = ci(:,1);        %keep only error for slope
+   
 end
 
 Temp_err = 1./errbar;
@@ -147,3 +155,21 @@ legend('2A Nozzle Current','4A Nozzle Current','6A Nozzle Current','Location','b
 
 Te_3 = avg(Te(2:4));
 Te_2 = avg(Te(5:7));
+
+%%
+
+%n =i_sat(Vp)/(ceAsqrt(kT/mi)) 
+
+%define constants
+e = 1.6E-19;
+A = 5E-6;
+k = 1.6E-19; %j/ev
+m = 6.63E-26; %kg
+
+for jdens = 1:length(Te)
+n(jdens) = abs(Isat_vp(jdens)/(e*A*sqrt(k*Te(jdens)/m)));
+end
+
+%Plot densities
+figure(8)
+plot(locs_use,n,'ko')
