@@ -111,9 +111,9 @@ for jcrop = 1:9
    x_u = x1(ii);
    I_u = log(I_use(jcrop,ii));
    Te_fit = fit(x_u.',I_u.','poly1'); %fits a 1 degree polynomial
-%    subplot(3,3,jcrop)               %These lines will plot the fits
-%    plot(Te_fit,x_u.',I_u.')
-%    legend off
+   subplot(3,3,jcrop)               %These lines will plot the fits
+   plot(Te_fit,x_u.',I_u.')
+   legend off
     
     Isat_vp(jcrop) = I_slope_u(jcrop)*(x_u(end)-min(V)) + I_b_u(jcrop);
 
@@ -130,33 +130,31 @@ ind_2A = [4 7];
 ind_4A = [3 6];
 ind_6A = [1 2 5 8 9];
 
-
+%%
 %Plotting
+figure(8)
+subplot(2,1,1)
 plot1 = errorbar(locs_use(ind_2A) ,Te(ind_2A),...
-    Te(ind_2A)-Temp_err(ind_2A,2),Te(ind_2A)-Temp_err(ind_2A,1),'ro','Linewidth',2);
+    Te(ind_2A)-Temp_err(ind_2A,2),Te(ind_2A)-Temp_err(ind_2A,1),'go','Markerfacecolor','g');
 xlim([-4 2])
 ylim([0 40])
 set(gca,'Fontsize',14)
-xlabel('Location (cm from center of nozzle)')
+% xlabel('Location (cm from center of nozzle)')
 ylabel('Temperature (eV)')
-title('Temperature computed from Langmuir IV curve')
+title('T_{e} from the IV Slope')
 
 hold on
 plot2 = errorbar(locs_use(ind_4A) ,Te(ind_4A),...
-    Te(ind_4A)-Temp_err(ind_4A,2),Te(ind_4A)-Temp_err(ind_4A,1),'go','Linewidth',2);
+    Te(ind_4A)-Temp_err(ind_4A,2),Te(ind_4A)-Temp_err(ind_4A,1),'bo','Markerfacecolor','b');
 
 plot3 = errorbar(locs_use(ind_6A) ,Te(ind_6A),...
-    Te(ind_6A)-Temp_err(ind_6A,2),Te(ind_6A)-Temp_err(ind_6A,1),'bo','Linewidth',2);
+    Te(ind_6A)-Temp_err(ind_6A,2),Te(ind_6A)-Temp_err(ind_6A,1),'ro','Markerfacecolor','r');
 
-legend('2A Nozzle Current','4A Nozzle Current','6A Nozzle Current','Location','best')
+% legend('2A Nozzle Current','4A Nozzle Current','6A Nozzle Current','Location','best')
 
-%%
-%Take the mean at the two locations
 
-Te_3 = avg(Te(2:4));
-Te_2 = avg(Te(5:7));
 
-%%
+
 
 %n =i_sat(Vp)/(ceAsqrt(kT/mi)) 
 
@@ -172,4 +170,14 @@ end
 
 %Plot densities
 figure(8)
-plot(locs_use,n,'ko')
+subplot(2,1,2)
+plot(locs_use(ind_2A),n(ind_2A),'go','Markerfacecolor','g')
+hold on
+plot(locs_use(ind_4A),n(ind_4A),'bo','Markerfacecolor','b')
+plot(locs_use(ind_6A),n(ind_6A),'ro','Markerfacecolor','r')
+xlabel('Distance from Nozzle Throat (cm)')
+ylabel('Density (m^{-3})')
+title('Ion density from I_{sat}')
+xlim([-4 2])
+set(gca,'Fontsize',14)
+legend('2A Nozzle Current','4A Nozzle Current', '6A Nozzle Current')

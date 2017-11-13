@@ -62,8 +62,16 @@ plot(wrange,spnorm2(icrop))
 
 %%
 figure(3)
-plot(wrange,spnorm(icrop))
+plot(wrange,spnorm(icrop),'linewidth',2)
 hold on
-plot(wrange,spnorm2(icrop))
-plot(wrange(locs),peakk,'ro')
-plot(wrange(look),peek,'go')
+plot(wrange,spnorm2(icrop),'linewidth',2)
+plot(wrange(locs([1:8 10])),peakk([1:8 10]),'co','linewidth',2)
+plot(wrange(look),peek,'go','linewidth',2)
+xlabel('Wavelength (nm)')
+ylabel('Intensity (arb)')
+title('Ar Emission Spectra')
+legend('7W Input Power','25W Input Power')
+set(gca,'Fontsize',14)
+
+
+
