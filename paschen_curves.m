@@ -20,6 +20,10 @@ d2 = 10;
 d3 = 5;
 d4 = 2;
 d5 = 1;
+%Errors
+err_d = .5; %5 mm
+err_p = .001; % 1 mtorr
+err_V = .10; %V
 
 %locations of data for different distances
 i1_a = argondata(:,6) == 20;
@@ -44,11 +48,22 @@ i5_n = nitrogendata(:,6) == 1;
 
 %Get pressure-distance and breakdown voltage
 
+disterr1 = (err_d/d1)^2;
+disterr2 = (err_d/d2)^2;
+disterr3 = (err_d/d3)^2;
+disterr4 = (err_d/d4)^2;
+disterr5 = (err_d/d5)^2;
+
+
 %Argon
-pd1_a = argondata(i1_a,1)*d1;
+pd1_a = argondata(i1_a,1)*d1; %computed pressure*distance
+e1a = pd1_a.*(sqrt((err_p./pd1_a).^2+disterr1)); %computed error
 pd2_a = argondata(i2_a,1)*d2;
+e2a = pd2_a.*(sqrt((err_p./pd2_a).^2+disterr2));
 pd4_a = argondata(i4_a,1)*d4;
+e4a = pd4_a.*(sqrt((err_p./pd4_a).^2+disterr4));
 pd5_a = argondata(i5_a,1)*d5;
+e5a = pd5_a.*(sqrt((err_p./pd5_a).^2+disterr5));
 
 V1_a = argondata(i1_a,2);
 V2_a = argondata(i2_a,2);
@@ -57,10 +72,15 @@ V5_a = argondata(i5_a,2);
 
 %Helium
 pd1_h = heliumdata(i1_h,1)*d1;
+e1h = pd1_h.*(sqrt((err_p./pd1_h).^2+disterr1));
 pd2_h = heliumdata(i2_h,1)*d2;
+e2h = pd2_h.*(sqrt((err_p./pd2_h).^2+disterr2));
 pd3_h = heliumdata(i3_h,1)*d3;
+e3h = pd3_h.*(sqrt((err_p./pd3_h).^2+disterr3));
 pd4_h = heliumdata(i4_h,1)*d4;
+e4h = pd4_h.*(sqrt((err_p./pd4_h).^2+disterr4));
 pd5_h = heliumdata(i5_h,1)*d5;
+e5h = pd5_h.*(sqrt((err_p./pd5_h).^2+disterr5));
 
 V1_h = heliumdata(i1_h,2);
 V2_h = heliumdata(i2_h,2);
@@ -70,10 +90,15 @@ V5_h = heliumdata(i5_h,2);
 
 %Nitrogen
 pd1_n = nitrogendata(i1_n,1)*d1;
+e1n = pd1_n.*(sqrt((err_p./pd1_n).^2+disterr1));
 pd2_n = nitrogendata(i2_n,1)*d2;
+e2n = pd2_n.*(sqrt((err_p./pd2_n).^2+disterr2));
 pd3_n = nitrogendata(i3_n,1)*d3;
+e3n = pd3_n.*(sqrt((err_p./pd3_n).^2+disterr3));
 pd4_n = nitrogendata(i4_n,1)*d4;
+e4n = pd4_n.*(sqrt((err_p./pd4_n).^2+disterr4));
 pd5_n = nitrogendata(i5_n,1)*d5;
+e5n = pd5_n.*(sqrt((err_p./pd5_n).^2+disterr5));
 
 V1_n = nitrogendata(i1_n,2);
 V2_n = nitrogendata(i2_n,2);
@@ -143,11 +168,12 @@ xlim([4E-2 3E1])
 
 %Argon
 figure(2)
-semilogx(pd1_a,V1_a,'ko')
+errorbar(pd1_a,V1_a,e1a,'ko','horizontal')
+set(gca,'Xscale','log')
 hold on
-semilogx(pd2_a,V2_a,'bs')
-semilogx(pd4_a,V4_a,'ro')
-semilogx(pd5_a,V5_a,'gs')
+errorbar(pd2_a,V2_a,e2a,'bs','horizontal')
+errorbar(pd4_a,V4_a,e4a,'ro','horizontal')
+errorbar(pd5_a,V5_a,e5a,'gs','horizontal')
 xlim([4E-2 1E2])
 set(gca,'Fontsize',14)
 xlabel('pd (torr-cm)')
@@ -156,14 +182,16 @@ title('Argon Paschen Curves')
 legend('d = 20 cm','d = 10 cm','d = 2 cm','d = 1 cm')
 hold off
 
+
 %Helium
 figure(3)
-semilogx(pd1_h,V1_h,'ko')
+errorbar(pd1_h,V1_h,e1h,'ko','horizontal')
+set(gca,'Xscale','log')
 hold on
-semilogx(pd2_h,V2_h,'bs')
-semilogx(pd3_h,V3_h,'mo')
-semilogx(pd4_h,V4_h,'rs')
-semilogx(pd5_h,V5_h,'go')
+errorbar(pd2_h,V2_h,e2h,'bs','horizontal')
+errorbar(pd3_h,V3_h,e3h,'mo','horizontal')
+errorbar(pd4_h,V4_h,e4h,'rs','horizontal')
+errorbar(pd5_h,V5_h,e5h,'go','horizontal')
 xlim([3E-2 1E2])
 set(gca,'Fontsize',14)
 xlabel('pd (torr-cm)')
@@ -174,12 +202,13 @@ hold off
 
 %Nitrogen
 figure(4)
-semilogx(pd1_n,V1_n,'ko')
+errorbar(pd1_n,V1_n,e1n,'ko','horizontal')
+set(gca,'Xscale','log')
 hold on
-semilogx(pd2_n,V2_n,'bs')
-semilogx(pd3_n,V3_n,'mo')
-semilogx(pd4_n,V4_n,'rs')
-semilogx(pd5_n,V5_n,'go')
+errorbar(pd2_n,V2_n,e2n,'bs','horizontal')
+errorbar(pd3_n,V3_n,e3n,'mo','horizontal')
+errorbar(pd4_n,V4_n,e4n,'rs','horizontal')
+errorbar(pd5_n,V5_n,e5n,'go','horizontal')
 xlim([3E-2 1E2])
 set(gca,'Fontsize',14)
 xlabel('pd (torr-cm)')
@@ -202,10 +231,10 @@ Ap_hm = mean(Ap_h);
 Ap_hs = std(Ap_h);
 Ap_hmf = mean(Ap_hf);
 Ap_hsf = std(Ap_hf);
-B_hm = mean(B_h);
-B_hs = std(B_h);
-B_hmf = mean(B_hf);
-B_hsf = std(B_hf);
+B_hm = mean(B_h)
+B_hs = std(B_h)
+B_hmf = mean(B_hf)
+B_hsf = std(B_hf)
 
 %Ar
 Ap_a = [3.15 3.1 3.02 2.64 3.57];
@@ -217,10 +246,10 @@ Ap_am = mean(Ap_a);
 Ap_as = std(Ap_a);
 Ap_amf = mean(Ap_af);
 Ap_asf = std(Ap_af);
-B_am = mean(B_a);
-B_as = std(B_a);
-B_amf = mean(B_af);
-B_asf = std(B_af);
+B_am = mean(B_a)
+B_as = std(B_a)
+B_amf = mean(B_af)
+B_asf = std(B_af)
 
 %N
 Ap_n = [2.94 2.5 4.0 2.97 3.69];
@@ -228,10 +257,10 @@ B_n = [349 550 374 274 341];
 Ap_nf = [5.79 6.52 2.24 1.33 5.06];
 B_nf = [546.9 654.6 336.6 214 564.28];
 
-Ap_nm = mean(Ap_n)
-Ap_ns = std(Ap_n)
-Ap_nmf = mean(Ap_nf)
-Ap_nsf = std(Ap_nf)
+Ap_nm = mean(Ap_n);
+Ap_ns = std(Ap_n);
+Ap_nmf = mean(Ap_nf);
+Ap_nsf = std(Ap_nf);
 B_nm = mean(B_n)
 B_ns = std(B_n)
 B_nmf = mean(B_nf)
